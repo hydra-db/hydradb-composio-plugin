@@ -1,0 +1,93 @@
+openapi: 3.0.3
+info:
+  title: HydraDB
+  description: Ingest knowledge and recall context from HydraDB.
+  version: "1.0.0"
+servers:
+  - url: https://api.hydradb.com
+security:
+  - bearerAuth: []
+paths:
+  /query:
+    post:
+      operationId: recall_context
+      summary: Recall relevant context for a query
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [database, query]
+              properties:
+                database:
+                  type: string
+                  description: HydraDB database (tenant).
+                collection:
+                  type: string
+                  description: Optional collection (sub-tenant) scope.
+                query:
+                  type: string
+                kind:
+                  type: string
+                  enum: [knowledge, memory]
+                  default: knowledge
+                mode:
+                  type: string
+                  default: fast
+                max_results:
+                  type: integer
+                  default: 6
+                graph_context:
+                  type: boolean
+                  default: true
+      responses:
+        "200":
+          description: Recall result envelope with data.chunks.
+          content:
+            application/json:
+              schema:
+                type: object
+  /context/ingest:
+    post:
+      operationId: ingest_knowledge
+      summary: Ingest notes as knowledge
+      description: >-
+        Uses the multipart app_knowledge path, whose data is retrievable by
+        /query. app_knowledge is a JSON string of items, each
+        {"id","title","content":{"text":...},"infer":true}.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [tenant_id, app_knowledge]
+              properties:
+                tenant_id:
+                  type: string
+                  description: HydraDB database (tenant).
+                sub_tenant_id:
+                  type: string
+                  description: Optional collection (sub-tenant) scope.
+                kind:
+                  type: string
+                  default: knowledge
+                app_knowledge:
+                  type: string
+                  description: >-
+                    JSON array of knowledge items, e.g.
+                    [{"id":"note-1","title":"note","content":{"text":"..."},"infer":true}].
+      responses:
+        "200":
+          description: Ingest ack (asynchronous; sources are queued).
+          content:
+            application/json:
+              schema:
+                type: object
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: HydraDB API key sent as a Bearer token.

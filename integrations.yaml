@@ -1,0 +1,20 @@
+# Composio custom app metadata. Import the OpenAPI spec (openapi.yaml) and this
+# auth config to register HydraDB as a custom app exposing two tools:
+#   - recall_context  (POST /query)
+#   - ingest_knowledge (POST /context/ingest)
+name: HydraDB
+unique_key: hydradb
+description: Ingest knowledge and recall context from HydraDB.
+logo: https://docs.hydradb.com/logo/logo.png
+categories:
+  - productivity
+docs: https://docs.hydradb.com/
+auth_schemes:
+  - name: bearer_token
+    auth_mode: BEARER_TOKEN
+    fields:
+      - name: token
+        display_name: API Key
+        description: HydraDB API key (sent as a Bearer token).
+        type: string
+        required: true
