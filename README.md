@@ -42,3 +42,17 @@ The query action accepts optional `include_table_sql` and `table_limit` (1–100
 When enabled, SQL may contain query literals; use care when passing it to
 downstream actions. The response schema exposes table data, chunk metadata,
 temporal fields, and warning collections while retaining additional API fields.
+
+## Offline contract test
+
+From a fresh checkout, use Python 3.12 to install the test dependency in an
+isolated environment and run the OpenAPI contract test:
+
+```bash
+python3.12 -m venv .venv
+. .venv/bin/activate
+python -m pip install -r requirements-dev.txt
+python -m unittest test_contract.py
+```
+
+The test checks the local specification without importing it into Composio.
