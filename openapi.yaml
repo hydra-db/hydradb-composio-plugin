@@ -38,6 +38,14 @@ paths:
                 max_results:
                   type: integer
                   default: 6
+                include_table_sql:
+                  type: boolean
+                  description: Include SQL for a successful table answer.
+                table_limit:
+                  type: integer
+                  minimum: 1
+                  maximum: 100
+                  description: Maximum table rows; defaults to 100.
                 graph_context:
                   type: boolean
                   default: true
@@ -48,6 +56,58 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: true
+                properties:
+                  data:
+                    type: object
+                    additionalProperties: true
+                    properties:
+                      chunks:
+                        type: array
+                        items:
+                          type: object
+                          additionalProperties: true
+                          properties:
+                            chunk_metadata:
+                              type: object
+                              additionalProperties: true
+                      tabular_data:
+                        type: object
+                        nullable: true
+                        additionalProperties: true
+                      temporal_facts:
+                        type: array
+                        items:
+                          type: object
+                          additionalProperties: true
+                          properties:
+                            observed_at:
+                              type: integer
+                              format: int64
+                      temporal_duration:
+                        type: object
+                        additionalProperties: true
+                      temporal_filter:
+                        type: object
+                        additionalProperties: true
+                  meta:
+                    type: object
+                    additionalProperties: true
+                    properties:
+                      warnings:
+                        type: array
+                        items:
+                          type: object
+                          additionalProperties: true
+                          properties:
+                            code:
+                              type: string
+                            message:
+                              type: string
+                            collections:
+                              type: array
+                              items:
+                                type: string
   /context/ingest:
     post:
       operationId: ingest_knowledge
