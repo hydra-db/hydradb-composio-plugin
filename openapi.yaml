@@ -38,6 +38,14 @@ paths:
                 max_results:
                   type: integer
                   default: 6
+                include_table_sql:
+                  type: boolean
+                  description: Include SQL for a successful table answer.
+                table_limit:
+                  type: integer
+                  minimum: 1
+                  maximum: 100
+                  description: Maximum table rows (1–100).
                 graph_context:
                   type: boolean
                   default: true
@@ -48,6 +56,33 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: true
+                properties:
+                  data:
+                    type: object
+                    additionalProperties: true
+                    properties:
+                      chunks:
+                        type: array
+                        items:
+                          type: object
+                          additionalProperties: true
+                          properties:
+                            metadata:
+                              type: object
+                              additionalProperties: true
+                            additional_metadata:
+                              type: object
+                              additionalProperties: true
+                      llm_prompt:
+                        type: string
+                      tabular_data:
+                        type: object
+                        nullable: true
+                        additionalProperties: true
+                  meta:
+                    type: object
+                    additionalProperties: true
   /context/ingest:
     post:
       operationId: ingest_knowledge

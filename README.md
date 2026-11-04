@@ -35,3 +35,24 @@ The two tools are then available to agents through a Composio session.
 The database (tenant) is carried in each request body, so a single app works
 across databases. For the full HydraDB tool set, register the HydraDB MCP server
 (`mcp.hydradb.com`) as a Composio Custom MCP connector instead of this app.
+
+### Query tables and response metadata
+
+The query action accepts optional `include_table_sql` and `table_limit` (1–100).
+When enabled, SQL may contain query literals; use care when passing it to
+downstream actions. The response schema exposes `llm_prompt`, table data, and
+chunk `metadata` and `additional_metadata`, while retaining additional API fields.
+
+## Offline contract test
+
+From a fresh checkout, use Python 3.12 to install the test dependency in an
+isolated environment and run the OpenAPI contract test:
+
+```bash
+python3.12 -m venv .venv
+. .venv/bin/activate
+python -m pip install -r requirements-dev.txt
+python -m unittest test_contract.py
+```
+
+The test checks the local specification without importing it into Composio.
