@@ -10,12 +10,17 @@ class ContractTest(unittest.TestCase):
         self.assertEqual(props['include_table_sql']['type'], 'boolean')
         self.assertEqual((props['table_limit']['minimum'], props['table_limit']['maximum']), (1, 100))
         result = query['responses']['200']['content']['application/json']['schema']['properties']
-        self.assertIn('warnings', result['meta']['properties'])
+        self.assertNotIn('default', props['table_limit'])
+        self.assertNotIn('default', props['table_limit']['description'].lower())
+        self.assertNotIn('warnings', result['meta'].get('properties', {}))
         data = result['data']['properties']
-        for key in ('tabular_data', 'temporal_facts', 'temporal_duration'):
-            self.assertIn(key, data)
-        self.assertIn('chunk_metadata', data['chunks']['items']['properties'])
-        self.assertIn('observed_at', data['temporal_facts']['items']['properties'])
-        self.assertIn('collections', result['meta']['properties']['warnings']['items']['properties'])
+        self.assertEqual(data['llm_prompt']['type'], 'string')
+        self.assertIn('tabular_data', data)
+        for key in ('temporal_facts', 'temporal_duration', 'temporal_filter'):
+            self.assertNotIn(key, data)
+        chunk = data['chunks']['items']['properties']
+        self.assertNotIn('chunk_metadata', chunk)
+        for key in ('metadata', 'additional_metadata'):
+            self.assertEqual(chunk[key]['type'], 'object')
 
 if __name__ == '__main__': unittest.main()

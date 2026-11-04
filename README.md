@@ -40,8 +40,8 @@ across databases. For the full HydraDB tool set, register the HydraDB MCP server
 
 The query action accepts optional `include_table_sql` and `table_limit` (1–100).
 When enabled, SQL may contain query literals; use care when passing it to
-downstream actions. The response schema exposes table data, chunk metadata,
-temporal fields, and warning collections while retaining additional API fields.
+downstream actions. The response schema exposes `llm_prompt`, table data, and
+chunk `metadata` and `additional_metadata`, while retaining additional API fields.
 
 ## Offline contract test
 
