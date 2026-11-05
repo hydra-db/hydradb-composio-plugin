@@ -28,7 +28,7 @@ paths:
                   description: Optional collection (sub-tenant) scope.
                 query:
                   type: string
-                kind:
+                type:
                   type: string
                   enum: [knowledge, memory]
                   default: knowledge
