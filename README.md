@@ -16,6 +16,20 @@ exposing HydraDB as agent-callable tools.
 
 `BEARER_TOKEN` - the HydraDB API key, sent as a Bearer token.
 
+## API version
+
+Both operations require the `API-Version: 2` request header. Supply it explicitly
+when executing the imported tools; it is a header parameter, not a body field.
+The OpenAPI contract allows only `2` and deliberately has no header default.
+It does not configure automatic static-header injection in Composio.
+
+After importing, verify that your importer exposes and forwards this required
+header. Hosted Composio importer behavior has not been verified here. A schema
+declaration alone is not proof that a hosted importer injects the header.
+Composio's [proxy request documentation](https://docs.composio.dev/reference/api-reference/tools/postToolsExecuteProxy)
+documents explicit provider-header parameters, but this repository does not
+change the existing importer or authentication setup to use that separate API.
+
 ## Files
 
 - `openapi.yaml` - the OpenAPI spec Composio generates the tools from.
@@ -35,3 +49,18 @@ The two tools are then available to agents through a Composio session.
 The database (tenant) is carried in each request body, so a single app works
 across databases. For the full HydraDB tool set, register the HydraDB MCP server
 (`mcp.hydradb.com`) as a Composio Custom MCP connector instead of this app.
+
+## Offline contract tests
+
+With Node.js 22 or later:
+
+```sh
+npm ci --ignore-scripts
+npm test
+```
+
+The tests execute the real Swagger Client request builder with a mock fetch,
+inspect serialized headers and multipart/JSON bodies, and verify that omitting
+the required version is rejected. They preserve the query selector's knowledge
+default and explicit knowledge/memory choices. No credentials or network calls
+are used by the tests; these checks do not certify the hosted Composio importer.
