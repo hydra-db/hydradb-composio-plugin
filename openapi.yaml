@@ -12,6 +12,8 @@ paths:
     post:
       operationId: recall_context
       summary: Recall relevant context for a query
+      parameters:
+        - $ref: '#/components/parameters/ApiVersion'
       requestBody:
         required: true
         content:
@@ -52,6 +54,8 @@ paths:
     post:
       operationId: ingest_knowledge
       summary: Ingest notes as knowledge
+      parameters:
+        - $ref: '#/components/parameters/ApiVersion'
       description: >-
         Uses the multipart app_knowledge path, whose data is retrievable by
         /query. app_knowledge is a JSON string of items, each
@@ -70,7 +74,7 @@ paths:
                 sub_tenant_id:
                   type: string
                   description: Optional collection (sub-tenant) scope.
-                kind:
+                type:
                   type: string
                   default: knowledge
                 app_knowledge:
@@ -86,6 +90,16 @@ paths:
               schema:
                 type: object
 components:
+  parameters:
+    ApiVersion:
+      name: API-Version
+      in: header
+      required: true
+      description: Explicitly send HydraDB API version 2.
+      example: "2"
+      schema:
+        type: string
+        enum: ["2"]
   securitySchemes:
     bearerAuth:
       type: http
