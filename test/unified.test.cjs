@@ -64,3 +64,22 @@ test('unified response schema declares root arrays and exact chunk identity/cont
   for (const key of ['chunk_id', 'context_id', 'score', 'content', 'enrichment', 'received_at', 'temporal', 'chunk_metadata']) assert.ok(chunk.properties[key], key);
   for (const key of ['source_title', 'metadata', 'additional_metadata']) assert.equal(Object.hasOwn(chunk.properties, key), false);
 });
+
+test('graph edge timestamps accept null, numbers or omission, but reject other JSON types', async () => {
+  const { spec: resolved } = await SwaggerClient.resolve({ spec: structuredClone(spec) });
+  const schema = resolved.paths['/query'].post.responses['200'].content['application/json'].schema;
+  const validate = new Ajv({ strict: false }).compile(schema);
+  for (const timestamp of [undefined, 0, 1.25, null, '0', {}, [], true]) {
+    const response = structuredClone(fixture);
+    response.data.graph[0].triplets = [{
+      source: { entity_id: 'a', name: 'A' },
+      relation: {
+        predicate: 'related', context: 'evidence', relationship_id: 'r', chunk_id: 'c1',
+        ...(timestamp !== undefined && { timestamp }),
+      },
+      target: { entity_id: 'b', name: 'B' },
+    }];
+    const expected = timestamp === undefined || timestamp === null || typeof timestamp === 'number';
+    assert.equal(validate(response), expected, `timestamp=${JSON.stringify(timestamp)}: ${JSON.stringify(validate.errors)}`);
+  }
+});

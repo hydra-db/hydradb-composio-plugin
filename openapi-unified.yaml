@@ -286,6 +286,7 @@ components:
                           type: string
                         timestamp:
                           type: number
+                          nullable: true
                         relationship_id:
                           type: string
                         chunk_id:
