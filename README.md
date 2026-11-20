@@ -2,6 +2,9 @@
 
 # HydraDB for Composio
 
+> Unified support is an unpublished rollout preview, not enabled in production.
+> Do not publish, import, or deploy it yet. See [rollout contract and offline tests](UNIFIED_ROLLOUT.md).
+
 A [Composio](https://composio.dev) custom app for [HydraDB](https://hydradb.com),
 exposing HydraDB as agent-callable tools.
 

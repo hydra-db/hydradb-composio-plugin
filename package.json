@@ -1,0 +1,6 @@
+{
+  "name": "hydradb-composio-rollout-tests",
+  "private": true,
+  "scripts": { "test": "node --test test/*.test.cjs" },
+  "devDependencies": { "ajv": "^8.17.1", "swagger-client": "3.39.0", "yaml": "2.9.1" }
+}
